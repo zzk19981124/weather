@@ -10,6 +10,7 @@ import com.example.weatherapp.myPermission.PermissionHelper;
 public class MainActivity extends AppCompatActivity {
     private PermissionHelper permissionHelper;
     private final int MY_PERMISSION_REQUEST_CODE = 404;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -25,3 +26,5 @@ public class MainActivity extends AppCompatActivity {
         permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
+
+//  logic
