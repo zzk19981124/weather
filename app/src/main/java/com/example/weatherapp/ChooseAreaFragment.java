@@ -40,8 +40,8 @@ import okhttp3.Response;
  */
 public class ChooseAreaFragment extends Fragment {
     public static final int LEVEL_PROVINCE = 0;
-    public static final int LEVEL_CITY = 0;
-    public static final int LEVEL_COUNTY = 0;
+    public static final int LEVEL_CITY = 1;
+    public static final int LEVEL_COUNTY = 2;
     private ProgressDialog progressDialog;
     private Button backBtn;
     private TextView titleText;
@@ -114,9 +114,10 @@ public class ChooseAreaFragment extends Fragment {
                 }
             }
         });
-        queryProvinces();
+        queryProvinces();//默认显示省级列表
     }
 
+    //省一级列表
     private void queryProvinces() {
         titleText.setText("中国");
         backBtn.setVisibility(View.GONE);
@@ -136,10 +137,12 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 
+    //市一级列表
     private void queryCities() {
         titleText.setText(selectProvince.getProvinceName());
         backBtn.setVisibility(View.VISIBLE);
-        cityList = DataSupport.findAll(City.class);
+        //cityList = DataSupport.findAll(City.class);
+        cityList = DataSupport.where("provinceid = ?",String.valueOf(selectProvince.getId())).find(City.class);
         if (cityList.size() > 0) {
             dataList.clear();
             for (City city : cityList) {
@@ -155,6 +158,7 @@ public class ChooseAreaFragment extends Fragment {
         }
     }
 
+    //县、区一级列表
     private void queryCounties() {
         titleText.setText(selectCity.getCityName());
         backBtn.setVisibility(View.VISIBLE);
@@ -177,6 +181,7 @@ public class ChooseAreaFragment extends Fragment {
 
     /**
      * 根据传入的地址和类型从服务器查询省市县的数据
+     *
      * @param address
      * @param type
      */
@@ -188,29 +193,30 @@ public class ChooseAreaFragment extends Fragment {
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 boolean result = false;
-                if ("province".equals(type)){
+                if ("province".equals(type)) {
                     result = Utility.handleProvincesResponse(responseText);
-                }else if ("city".equals(type)){
-                    result = Utility.handleCitiesResponse(responseText,selectProvince.getId());
-                }else if ("county".equals(type)){
-                    result = Utility.handleCountiesResponse(responseText,selectCity.getId());
+                } else if ("city".equals(type)) {
+                    result = Utility.handleCitiesResponse(responseText, selectProvince.getId());
+                } else if ("county".equals(type)) {
+                    result = Utility.handleCountiesResponse(responseText, selectCity.getId());
                 }
-                if (result){
+                if (result) {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             closeProgressDialog();
-                            if ("province".equals(type)){
+                            if ("province".equals(type)) {
                                 queryProvinces();
-                            }else if ("city".equals(type)){
+                            } else if ("city".equals(type)) {
                                 queryCities();
-                            }else if ("county".equals(type)){
+                            } else if ("county".equals(type)) {
                                 queryCounties();
                             }
                         }
                     });
                 }
             }
+
             @Override
             public void onFailure(Call call, IOException e) {
                 getActivity().runOnUiThread(new Runnable() {
@@ -227,19 +233,20 @@ public class ChooseAreaFragment extends Fragment {
     /**
      * 显示进度对话框
      */
-    private void showProgressDialog(){
-        if (progressDialog == null){
+    private void showProgressDialog() {
+        if (progressDialog == null) {
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("正在加载...");
             progressDialog.setCanceledOnTouchOutside(false);
         }
         progressDialog.show();
     }
+
     /**
      * 关闭进度对话框
      */
-    private void closeProgressDialog(){
-        if (progressDialog!=null){
+    private void closeProgressDialog() {
+        if (progressDialog != null) {
             progressDialog.dismiss();
         }
     }

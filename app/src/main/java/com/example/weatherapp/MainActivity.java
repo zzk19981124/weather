@@ -2,29 +2,51 @@ package com.example.weatherapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.example.weatherapp.myPermission.PermissionHelper;
+import com.qweather.sdk.view.HeConfig;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private PermissionHelper permissionHelper;
-    private final int MY_PERMISSION_REQUEST_CODE = 404;
+    private static final int PERMISSION_REQUEST = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        checkPermission();//检查所需权限
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //检查需要满足的动态权限，如果没有打开权限，会弹窗提示需要用户打开哪些权限
-        permissionHelper = new PermissionHelper(this, MY_PERMISSION_REQUEST_CODE);
-        permissionHelper.startRequestPermissions();
+        initQWeather();//初始化和风天气sdk
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        permissionHelper.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+
+    //检查app权限,如果判断app没有获取到该权限，添加到list，然后跳转到系统权限申请界面，让用户去手动打开权限
+    private void checkPermission() {
+        List<String> mPermissionList = new ArrayList<>();
+        String[] permissions = {Manifest.permission.INTERNET, Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+        for (String permission : permissions) {
+            if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
+                mPermissionList.add(permission);
+        }
+        if (!mPermissionList.isEmpty()) {
+            String[] permissionss = mPermissionList.toArray(new String[mPermissionList.size()]);
+            ActivityCompat.requestPermissions(MainActivity.this, permissionss, PERMISSION_REQUEST);
+        }
+    }
+    //初始化和风天气sdk
+    private void initQWeather() {
+        HeConfig.init("HE2108091349151897", "bb2f7903c86949c682fbd66095e75896");//账户初始化
+        HeConfig.switchToDevService();//切换至和风的开发版服务
+
     }
 }
 
-//  logic
