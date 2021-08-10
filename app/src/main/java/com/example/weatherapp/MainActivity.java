@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.KeyEvent;
 
 import com.example.weatherapp.myPermission.PermissionHelper;
 import com.qweather.sdk.view.HeConfig;
@@ -27,7 +28,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     //检查app权限,如果判断app没有获取到该权限，添加到list，然后跳转到系统权限申请界面，让用户去手动打开权限
     private void checkPermission() {
         List<String> mPermissionList = new ArrayList<>();
@@ -42,11 +42,26 @@ public class MainActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(MainActivity.this, permissionss, PERMISSION_REQUEST);
         }
     }
+
     //初始化和风天气sdk
     private void initQWeather() {
         HeConfig.init("HE2108091349151897", "bb2f7903c86949c682fbd66095e75896");//账户初始化
         HeConfig.switchToDevService();//切换至和风的开发版服务
 
+    }
+
+    /**
+     * 系统返回键，单击事件
+     * @param keyCode
+     * @param event
+     * @return
+     */
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0){
+
+        }
+            return super.onKeyDown(keyCode, event);
     }
 }
 
