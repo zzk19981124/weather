@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     private void checkPermission() {
         List<String> mPermissionList = new ArrayList<>();
         String[] permissions = {Manifest.permission.INTERNET, Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+        ,Manifest.permission.ACCESS_WIFI_STATE};
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
                 mPermissionList.add(permission);
