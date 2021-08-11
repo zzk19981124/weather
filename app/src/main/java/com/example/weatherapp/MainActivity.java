@@ -10,7 +10,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.KeyEvent;
 
-import com.example.weatherapp.myPermission.PermissionHelper;
+import com.baidu.location.LocationClient;
 import com.qweather.sdk.view.HeConfig;
 
 import java.util.ArrayList;
@@ -18,6 +18,8 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 1;
+    private LocationClient mLocationClient = null;
+    private MyLocationListener locationListener = new MyLocationListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,15 +27,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initQWeather();//初始化和风天气sdk
+        //mLocationClient = new LocationClient(getApplicationContext());
+        //mLocationClient.registerLocationListener(s);
     }
 
 
     //检查app权限,如果判断app没有获取到该权限，添加到list，然后跳转到系统权限申请界面，让用户去手动打开权限
     private void checkPermission() {
         List<String> mPermissionList = new ArrayList<>();
-        String[] permissions = {Manifest.permission.INTERNET, Manifest.permission.READ_PHONE_STATE,
-                Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-        ,Manifest.permission.ACCESS_WIFI_STATE};
+        String[] permissions = {Manifest.permission.INTERNET,//访问网络，定位需要上网
+                Manifest.permission.READ_PHONE_STATE,
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_WIFI_STATE,
+                Manifest.permission.ACCESS_NETWORK_STATE,
+                Manifest.permission.CHANGE_WIFI_STATE,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE};
         for (String permission : permissions) {
             if (ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED)
                 mPermissionList.add(permission);

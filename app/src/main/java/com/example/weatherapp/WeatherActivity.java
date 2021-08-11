@@ -24,7 +24,7 @@ import org.w3c.dom.Text;
 import java.util.List;
 
 public class WeatherActivity extends AppCompatActivity {
-    private ScrollView mScrollView;
+    private ScrollView weatherLayout;
 
     private TextView titleCity;
 
@@ -58,7 +58,7 @@ public class WeatherActivity extends AppCompatActivity {
 
 
     private void initView() {
-        mScrollView = findViewById(R.id.weather_layout);
+        weatherLayout = findViewById(R.id.weather_layout);
         titleCity = findViewById(R.id.title_text);
         titleUpdate = findViewById(R.id.title_update_time);
         degreeText = findViewById(R.id.degree_text);
