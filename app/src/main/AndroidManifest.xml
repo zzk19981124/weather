@@ -15,24 +15,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp">
+        <activity android:name=".CoolWeatherActivity"/>
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="bdy4RKKZ6TRKdTUgN0xfjUVcuKORb1O9" >
-        </meta-data>
+            android:value="bdy4RKKZ6TRKdTUgN0xfjUVcuKORb1O9"/>
 
-        <service android:name="com.baidu.location.f" android:enabled="true" android:process=":remote"></service>
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote" />
 
         <activity android:name=".WeatherActivity">
+
+        </activity>
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity android:name=".MainActivity">
-
         </activity>
     </application>
 

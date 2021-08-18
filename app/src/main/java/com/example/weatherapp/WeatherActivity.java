@@ -7,6 +7,7 @@ import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -78,8 +79,8 @@ public class WeatherActivity extends AppCompatActivity {
                 case 1:
                     /*while (isGetWeather == false) {
                     }*/
-                    getWeatherInfo(String.valueOf(msg.obj));
-                    mLocationClient.stop();
+                    //getWeatherInfo(String.valueOf(msg.obj));
+                    //mLocationClient.stop();
                     break;
                 case 2:
                     //titleCity.setText(String.valueOf(msg.obj));
@@ -96,14 +97,34 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         initView();//初始化各控件
-        initBaiDuLocation();//初始化百度sdk
+        initBaiDuLocation();//初始化百度sdk , 将所需城市信息放入SharedPreferences中
         initQWeather();//初始化和风天气sdk
+
+        SharedPreferences pref = getSharedPreferences("location",0);
+        String longitude = pref.getString("longitude","");
+        String latitude = pref.getString("latitude","");
+        String location  = longitude +","+latitude;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    getWeatherInfo(location);
+                    Thread.sleep(100);
+                    mLocationClient.stop();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String location = cityInfo.getLongitude() +","+cityInfo.getLatitude();
-                getWeatherInfo(location);
+               /* String location = cityInfo.getLongitude() +","+cityInfo.getLatitude();
+                getWeatherInfo(location);*/
+
             }
         });
     }
@@ -182,7 +203,6 @@ public class WeatherActivity extends AppCompatActivity {
 
                     }
                 });
-
     }
 
     //检查app权限,如果判断app没有获取到该权限，添加到list，然后跳转到系统权限申请界面，让用户去手动打开权限
@@ -243,8 +263,16 @@ public class WeatherActivity extends AppCompatActivity {
             String district = bdLocation.getDistrict();    //获取区县
             String street = bdLocation.getStreet();    //获取街道信息
 
+            //使用sharedPreferences,存储获取到的定位数据
+            SharedPreferences.Editor editor = getSharedPreferences("location",0).edit();
+            editor.putString("longitude",String.valueOf(longitude));
+            editor.putString("latitude",String.valueOf(latitude));
+            editor.putString("city",city);
+            editor.putString("district",district);
+            editor.putString("street",street);
+            editor.apply();
 
-            cityInfo.setLatitude(latitude);
+            /*cityInfo.setLatitude(latitude);
             cityInfo.setLongitude(longitude);
             cityInfo.setDistrict(district);
             cityInfo.setStreet(street);
@@ -260,7 +288,7 @@ public class WeatherActivity extends AppCompatActivity {
                 message2.what = 2;
                 message2.obj = district + " " + street;
                 mHandler.sendMessage(message2);
-            }
+            }*/
         }
     };
 
