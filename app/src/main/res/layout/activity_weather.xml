@@ -1,33 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".WeatherActivity"
     android:background="@color/design_default_color_primary">
-    <ScrollView
-        android:id="@+id/weather_layout"
+    <!--android:scaleType="centerCrop"   设置图片缩放比 自适应填满屏幕-->
+    <!--必应每日一图-->
+    <ImageView
+        android:id="@+id/bing_pic_img"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="none"
-        android:overScrollMode="never">
-        <LinearLayout
-            android:orientation="vertical"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop" />
+
+    <androidx.drawerlayout.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <include layout="@layout/title"/>
+            <ScrollView
+                android:id="@+id/weather_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:overScrollMode="never"
+                android:scrollbars="none">
 
-            <include layout="@layout/now"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            <include layout="@layout/forecast"/>
+                    <include layout="@layout/title" />
 
-            <include layout="@layout/aqi"/>
+                    <include layout="@layout/now" />
 
-            <include layout="@layout/suggestion"/>
+                    <include layout="@layout/forecast" />
 
-        </LinearLayout>
-    </ScrollView>
+                    <include layout="@layout/aqi" />
+
+                    <include layout="@layout/suggestion" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
 </FrameLayout>

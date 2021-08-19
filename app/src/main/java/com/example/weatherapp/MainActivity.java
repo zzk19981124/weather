@@ -6,8 +6,12 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.KeyEvent;
 
 import com.baidu.location.LocationClient;
@@ -18,15 +22,25 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST = 1;
-    private LocationClient mLocationClient = null;
-    private MyLocationListener locationListener = new MyLocationListener();
+   // private LocationClient mLocationClient = null;
+    //private MyLocationListener locationListener = new MyLocationListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        checkPermission();//检查所需权限
+        //checkPermission();//检查所需权限
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        initQWeather();//初始化和风天气sdk
+        setContentView(R.layout.activity_weather);
+
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (prefs.getString("weather",null)!=null){
+            Log.d("MainActivity------>", "");
+            Intent intent = new Intent(this,CoolWeatherActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+
+        //initQWeather();//初始化和风天气sdk
         //mLocationClient = new LocationClient(getApplicationContext());
         //mLocationClient.registerLocationListener(s);
     }

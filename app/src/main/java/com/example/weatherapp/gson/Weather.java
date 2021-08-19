@@ -6,4 +6,6 @@ package com.example.weatherapp.gson;
  * @date 2021/8/18
  */
 public class Weather {
+    public String status;
+
 }

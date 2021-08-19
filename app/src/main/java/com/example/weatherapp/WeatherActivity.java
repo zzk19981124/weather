@@ -147,7 +147,7 @@ public class WeatherActivity extends AppCompatActivity {
         weatherLayout = findViewById(R.id.weather_layout);
         titleCity = findViewById(R.id.title_text);
         titleUpdate = findViewById(R.id.title_update_time);
-        dataUpdate = findViewById(R.id.update_text);
+        //dataUpdate = findViewById(R.id.update_text);
         degreeText = findViewById(R.id.degree_text);
         weatherInfoText = findViewById(R.id.weather_info_text);
         forecastLayout = findViewById(R.id.forecast_layout);

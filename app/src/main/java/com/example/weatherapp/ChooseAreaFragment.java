@@ -35,7 +35,7 @@ import okhttp3.Response;
 
 /**
  * @author hello word
- * @desc 作用描述
+ * @desc 省市列表
  * @date 2021/7/19
  */
 public class ChooseAreaFragment extends Fragment {
