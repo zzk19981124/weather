@@ -3,6 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     android:background="@color/design_default_color_primary">
     <!--android:scaleType="centerCrop"   设置图片缩放比 自适应填满屏幕-->
     <!--必应每日一图-->
@@ -10,6 +11,7 @@
         android:id="@+id/bing_pic_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
         android:scaleType="centerCrop" />
 
     <androidx.drawerlayout.widget.DrawerLayout
