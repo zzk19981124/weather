@@ -35,15 +35,15 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
+                    <!--城市名、更新时间、返回按钮-->
                     <include layout="@layout/title" />
-
+                    <!--text1:当前气温  ， text2  :天气概况-->
                     <include layout="@layout/now" />
-
+                    <!--未来几天天气信息的布局-->
                     <include layout="@layout/forecast" />
-
+                    <!--空气质量信息-->
                     <include layout="@layout/aqi" />
-
+                    <!--生活建议信息-->
                     <include layout="@layout/suggestion" />
 
                 </LinearLayout>

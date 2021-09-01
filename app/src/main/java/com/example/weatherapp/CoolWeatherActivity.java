@@ -85,7 +85,9 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
 
     //private CityInformation cityInfo = new CityInformation();//放置经纬度、城市、街道信息
 
-    private String weatherId;
+    private String weatherId;//经纬度数据
+
+    private static final String APIKey = "f3773b3c742e43738f6bfc0f28be3a07";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,8 +111,11 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
 
         //SharedPreferences config = getSharedPreferences("config", MODE_PRIVATE);
 
-        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        String weatherString = prefs.getString("weather", null);
+        SharedPreferences pref1 = this.getSharedPreferences("weather",MODE_PRIVATE);  //天气
+        SharedPreferences pref2 = this.getSharedPreferences("location",MODE_PRIVATE);   //经纬度
+
+        //SharedPreferences prefs = this.getPreferences("")
+        String weatherString = pref1.getString("weather", null);
 
         if (weatherString != null) {
             //有缓存时，直接解析天气数据
@@ -118,7 +123,7 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
             Weather weather = Utility.handleWeatherResponse(weatherString);
         } else {
             //无天气信息时，去服务器查询天气
-            weatherId = prefs.getString("location", "");
+            weatherId = pref2.getString("location", "");
             //滚动条设置为不可见的
             //weatherLayout.setVisibility(View.INVISIBLE);  // 会使布局消失
             requestWeather(weatherId);
@@ -134,7 +139,7 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
             }
         });
         //插入bing每日一图放入imageView
-        String bingPic = prefs.getString("bingPic", null);
+        String bingPic = pref1.getString("bingPic", null);
         if (bingPic != null) {
             Glide.with(this).load(bingPic).into(bingPicImg);
         } else {
@@ -151,15 +156,40 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
      * https://api.caiyunapp.com/v2.5/ybYlZVR7znW79DfN/114.30425,22.745263/realtime.json
      * <p>
      * https://api.caiyunapp.com/v2.5/ybYlZVR7znW79DfN/114.30425,22.745263/forecast.json
+     * <p>
+     * 和风天气 实时天气预报
+     * https://devapi.qweather.com/v7/weather/now?key=f3773b3c742e43738f6bfc0f28be3a07&location=114.30425,22.745263   √
+     * <p>
+     * 逐小时天气预报：
+     * https://devapi.qweather.com/v7/weather/24h?key=f3773b3c742e43738f6bfc0f28be3a07&location=114.30425,22.745263
      */
     public void requestWeather(final String locationId) {
         if (locationId == null) {
             Log.d(TAG, "requestWeather: --->未获取到经纬度信息");
             return;
         }
-        String weatherUrl = "https://api.caiyunapp.com/v2.5/ybYlZVR7znW79DfN/" +
-                locationId + "/realtime.json";
+        String weatherUrl = "https://devapi.qweather.com/v7/weather/now?key=" + APIKey + "&location=" + locationId;
         HttpUtil.sendOkHttpRequest(weatherUrl, new Callback() {
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                final String responseText = response.body().string(); // 这个只能调用一次
+                final Weather weather = Utility.handleWeatherResponse(responseText);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (weather != null && "200".equals(weather.code)) {
+                            //if (weather!=null ){
+                            SharedPreferences.Editor editor = PreferenceManager
+                                    .getDefaultSharedPreferences(CoolWeatherActivity.this).edit();
+                            editor.putString("weather", responseText);
+                            editor.apply();
+                        } else {
+                            Toast.makeText(CoolWeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
+                        }
+                        swipeRefreshLayout.setRefreshing(false); // 关闭下拉刷新效果
+                    }
+                });
+            }
             @Override
             public void onFailure(Call call, IOException e) {
                 e.printStackTrace();
@@ -169,26 +199,6 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
                         Toast.makeText(CoolWeatherActivity.this,
                                 "获取天气信息失败", Toast.LENGTH_SHORT).show();
                         //关闭下拉刷新控件
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                final String responseText = response.body().string(); // 这个只能调用一次
-                final Weather weather = Utility.handleWeatherResponse(responseText);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (weather!=null && "ok".equals(weather.status)){
-                            SharedPreferences.Editor editor = PreferenceManager
-                                    .getDefaultSharedPreferences(CoolWeatherActivity.this).edit();
-                            editor.putString("weather",responseText);
-                            editor.apply();
-                        }else{
-                            Toast.makeText(CoolWeatherActivity.this, "获取天气信息失败", Toast.LENGTH_SHORT).show();
-                        }
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -306,7 +316,7 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
             String locationData = longitude + "," + latitude;
             editor.putString("location", locationData);
             editor.apply();
-
+            Log.d(TAG, "百度sdk获取经纬度 --->"+locationData);  //打印出了很多行
         }
     };
 
@@ -320,14 +330,15 @@ public class CoolWeatherActivity extends AppCompatActivity implements View.OnCli
                 break;
         }
     }
+
     /**
      * 处理并展示weather实体类中的数据
-     * */
+     */
     private void showWeatherInfo(Weather weather) {
         String cityName;
         String updateTime;
         String degree = "℃";
-        String weatherInfo ;
+        String weatherInfo;
     }
 }
 
